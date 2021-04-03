@@ -1,44 +1,35 @@
-//Step 2: 
-// Use D3 to create an event handler
-// function updatePage() {
-//   d3.json('samples.json').then((data)=> {
-//     var dropdownMenu = d3.select("#selDataset"); //# means id // . means class
-//       data['names'].forEach((id_num)=> {
-//         dropdownMenu.append('option').text(id_num).property('value', id_num);	//.text method grab (name text)
-//     });
-//   });
-// }
-
-// updatePage();
-
-function updatePage(){
-d3.json('././samples.json').then((data)=> {
-	var dropdown =d3.select('#selDataset');
-	data['names'].forEach((nameid)=>{
-		dropdown.append('option').text(nameid).property('value', nameid)
-	});
- });
+function updatePage() {
+  d3.json('././samples.json').then((data)=> {
+	 var dropdown =d3.select('#selDataset');
+	   data['names'].forEach((nameid)=>{
+		  dropdown.append('option').text(nameid).property('value', nameid)
+	 });
+  });
 }
 
 updatePage();
 
 function buildPlot(name_id){
  d3.json('././samples.json').then((data)=>{
-  var samples = data.samples.filter(d=>d.id.toString()===name_id)[0];
-  var metadata = data.metadata.filter(d=>d.id.toString()===name_id)[0];
-  var otu_ids = samples.otu_ids;
-  var samplevalues = samples.samples_values;
-  var hover_text=samples.otu_labels;
-  var otu_label= otu_ids.map(x=> `otu ${x}`).slice(0,10).reverse()
+    //data ={'name': [], 'samples': [], 'metadata': []}
+    //samples=[{'id': 'fd', 'values': []}][0]
+    //samples={'id': 'fd', 'values': []}
+    var samples = data.samples.filter(d=>d.id==name_id)[0];
 
-  var trace_bar= {
+    var metadata = data['metadata'].filter(d=>d.id==name_id)[0];
+    var otu_ids = samples['otu_ids'];
+    var samplevalues = samples['sample_values'];
+    var hover_text=samples['otu_labels'];
+    otu_label= otu_ids.map(x=> `otu ${x}`).slice(0,10).reverse()
+    console.log(samplevalues)
+    console.log(samples)
+    var trace_bar= {
       'type': 'bar',
       'y': otu_label,
       'x': samplevalues.slice(0,10).reverse(),
       'text': hover_text.slice(0,10).reverse(),
       'orientation': 'h'
     };
- 
 
  var bar_layout={
    'title': 'Top 10 Clusters Found',
@@ -46,7 +37,7 @@ function buildPlot(name_id){
    'b': 30
  };
 
- Plotly.newPlot('bar', [trace_bar], [bar_layout]); //potential change square brackets
+ Plotly.newPlot('bar', [trace_bar], bar_layout); //potential change square brackets
 
    var trace_bubble= {
      'type': 'scatter',
@@ -65,7 +56,7 @@ function buildPlot(name_id){
     };
 
 
-      Plotly.newPlot('bubble', [trace_bubble], [bubble_layout]);
+      Plotly.newPlot('bubble', [trace_bubble], bubble_layout);
 
     var tbody=d3.select('tbody');
     tbody.html('')
